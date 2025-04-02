@@ -1,4 +1,4 @@
-Below is an **updated** Death Star network environment description, now **including Turbo Laser systems**. These changes expand the ICS Control (Level 2) and ICS Field/IO (Level 1) segments to account for the Turbo Laser batteries that protect the Death Star. Use this updated design for your Incident Response tabletop exercises.
+Below is a Death Star network environment description, now **including Turbo Laser systems**. These changes expand the ICS Control (Level 2) and ICS Field/IO (Level 1) segments to account for the Turbo Laser batteries that protect the Death Star. Use this updated design for your Incident Response tabletop exercises.
 
 ---
 
