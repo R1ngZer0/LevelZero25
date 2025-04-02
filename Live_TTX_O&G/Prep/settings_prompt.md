@@ -1,0 +1,1 @@
+Please use the attached scenario.md and network.md to populate the necessary fields in the settings.json. Use the exact json fields and format. Do not add or remove fields. If there are any recommended injects, please copy those to the injects field, but also keep them in the scenario field.
