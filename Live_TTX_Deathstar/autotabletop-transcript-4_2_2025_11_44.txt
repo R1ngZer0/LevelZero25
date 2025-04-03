@@ -1,0 +1,311 @@
+Facilitator: **Introduction:**
+
+Welcome to today's Incident Response Tabletop Exercise. As the facilitator, I will guide you through the scenario and provide feedback and challenges/injects as needed. Your role is to respond as you would in a real-world situation, make decisions, and take actions as a team. It is important to take time to discuss possibilities and actions as a team. I'm also here to help guide you, so feel free to ask me for advice at any time. This exercise is set in the Star Wars universe, aboard the Death Star, where you are part of the Death Star Cyber Team tasked with protecting the Empire's ultimate weapon from a Rebel Alliance cyber attack. Your mission is to identify, contain, and eradicate any threats to the Death Star's critical systems, ensuring the super laser remains operational. Remember, Lord Vader expects nothing less than perfection.
+
+**Setting the Stage:**
+
+The current date is April 2, 2025, at 11:44 AM. You are aboard the Galactic Empire's Death Star, a massive space station with the capability to destroy entire planets. The Death Star is a marvel of engineering, equipped with advanced aerospace and defense technologies. It houses a vast array of systems, including SCADA systems for super laser targeting and power monitoring, a sensor network feeding targeting data and energy levels to the main reactor, and command and control interfaces for the turbo laser batteries and tractor beams. The Death Star Cyber Team is responsible for safeguarding these systems against any cyber threats. The team consists of IT staff, OT staff, cybersecurity experts, and leadership personnel, including the CEO and CISO. Your objective is to ensure the Death Star's super laser remains operational by successfully implementing the identification, classification, isolation, eradication, and recovery phases of an incident response.
+
+**Scenario:**
+
+As the Death Star orbits a distant planet, preparing for a demonstration of its super laser's power, an alert is triggered in the SCADA system. The alert indicates unusual power fluctuations in the super laser capacitors, which could potentially disrupt the firing sequence. Initial diagnostics suggest a fault in the reactor's cooling subsystem, but the timing and nature of the alert raise suspicions of possible malicious activity. The Death Star Cyber Team must investigate the source of the alert and determine if it is part of a larger Rebel Alliance cyber attack aimed at disabling the super laser.
+
+Before we proceed, please provide the names and roles of the participants in your team. Without this information, I might inadvertently simulate actions on behalf of your team. If you do not have specific participants, we can proceed with the exercise without them. Additionally, since no IR plan was provided, your actions will be judged based on best practices and industry standards for incident response.
+Your Team: Let's investigate the cooling subsystems. Show me the logs (in log format) so we might be able to get an idea of what is failing. Let's contact the Death Star SOC to see if they are picking up any network anomalies? Ask the engineers to investigate the cooling or other systems that might be having an issue.
+Facilitator: **Scenario Continuation:**
+
+As the Death Star Cyber Team springs into action, you decide to investigate the cooling subsystems to determine the cause of the unusual power fluctuations in the super laser capacitors. You request the logs from the SCADA system to analyze any anomalies or signs of tampering. Meanwhile, you reach out to the Death Star Security Operations Center (SOC) to check for any network anomalies that could indicate a cyber attack. Additionally, you instruct the engineering team to conduct a thorough inspection of the cooling and other related systems to identify any physical or technical issues.
+
+**SCADA System Logs:**
+
+```
+[2025-04-02 11:30:00] INFO: Cooling subsystem operational. Temperature stable at 2500K.
+[2025-04-02 11:35:00] INFO: Power levels within normal range. No anomalies detected.
+[2025-04-02 11:40:00] WARNING: Power fluctuation detected in super laser capacitors. Investigating cause.
+[2025-04-02 11:41:00] ERROR: Cooling subsystem temperature spike to 3000K. Possible reactor cooling fault.
+[2025-04-02 11:42:00] ALERT: Unauthorized access attempt detected on cooling subsystem control panel.
+[2025-04-02 11:43:00] INFO: Cooling subsystem temperature returning to normal. Monitoring closely.
+```
+
+**Death Star SOC Report:**
+
+The SOC reports that they have detected unusual network traffic patterns originating from the ICS DMZ (10.0.2.0/24) and targeting the ICS Control network (10.0.4.0/24). The traffic appears to be probing the network for vulnerabilities, and there are signs of potential unauthorized access attempts on several control systems, including the super laser and cooling subsystems.
+
+**Engineering Team Report:**
+
+The engineering team reports that they have found no physical issues with the cooling subsystem. However, they note that the control panel for the cooling system shows signs of recent access, which is unusual given the current operational status. They suspect that the access may have been unauthorized and could be related to the power fluctuations.
+
+**Next Steps:**
+
+Based on the information gathered, it appears that there may be a coordinated cyber attack targeting the Death Star's critical systems. The unauthorized access attempt on the cooling subsystem control panel and the unusual network traffic patterns suggest that the Rebel Alliance may be attempting to infiltrate the Death Star's systems. How would you like to proceed with the investigation and response?
+Your Team: Can we determine which account is connected to the unauthorized access? Who is responsible for the cooling system? We should contact them and question them!
+Facilitator: **Scenario Continuation:**
+
+In response to the unauthorized access attempt on the cooling subsystem control panel, you decide to investigate further to determine which account was used for the access and identify the individual responsible for the cooling system. This will help you ascertain whether the access was legitimate or part of a larger Rebel Alliance cyber attack.
+
+**Account Investigation:**
+
+You access the authentication logs for the cooling subsystem control panel to trace the unauthorized access attempt. The logs reveal the following:
+
+```
+[2025-04-02 11:41:00] LOGIN ATTEMPT: User ID: DS-ENG-WS01, IP: 10.0.3.14, Status: SUCCESS
+[2025-04-02 11:41:30] LOGIN ATTEMPT: User ID: DS-ENG-WS01, IP: 10.0.3.14, Status: SUCCESS
+[2025-04-02 11:42:00] LOGIN ATTEMPT: User ID: DS-ENG-WS01, IP: 10.0.3.14, Status: SUCCESS
+```
+
+The logs indicate that the account "DS-ENG-WS01" was used to access the cooling subsystem control panel. This account is associated with one of the engineering workstations, specifically Engineering Workstation #1, which is used by the engineering team for system diagnostics and maintenance.
+
+**Contacting the Responsible Engineer:**
+
+You reach out to the engineering team to identify the individual responsible for the cooling system and the user of the "DS-ENG-WS01" account. The team informs you that the account is primarily used by Engineer Lieutenant Krennic, who oversees the cooling and reactor systems on the Death Star.
+
+You contact Lieutenant Krennic to question him about the recent access to the cooling subsystem control panel. He appears surprised by the inquiry and insists that he has not accessed the system recently. He suggests that his credentials may have been compromised, as he has been working on other projects and has not logged into the cooling subsystem today.
+
+**Next Steps:**
+
+Given the possibility of compromised credentials, it is crucial to determine how the account was accessed and whether there are any other compromised accounts. You may want to consider resetting the credentials for the affected account, conducting a broader investigation into potential credential theft, and implementing additional security measures to prevent further unauthorized access. How would you like to proceed?
+Your Team: Where else has he been today? Has he logged into any other systems? 
+
+We should lock that account. Let's do further network analysis to see if any further systems have been access (anomylous). Let's look at Krennik's email/comm systems to see if he has had any other suspicious communication.
+
+Let's check EDR/EDX for any lateral movement activity. 
+
+Do we have a risk matrix for the affected device.
+
+We should elevate this to Krennik's CO.
+Facilitator: **Scenario Continuation:**
+
+To further investigate the potential compromise of Lieutenant Krennic's account, you decide to track his activities across the Death Star's network and systems. This will help you determine if there are any other anomalies or unauthorized access attempts associated with his credentials.
+
+**Account Activity Investigation:**
+
+You review the authentication logs for other systems to see where else Lieutenant Krennic's account has been used today:
+
+```
+[2025-04-02 09:15:00] LOGIN: User ID: DS-ENG-WS01, IP: 10.0.3.14, System: DS-HMI-SUPERLASER1, Status: SUCCESS
+[2025-04-02 10:30:00] LOGIN: User ID: DS-ENG-WS01, IP: 10.0.3.14, System: DS-ENG-WS02, Status: SUCCESS
+[2025-04-02 11:00:00] LOGIN: User ID: DS-ENG-WS01, IP: 10.0.3.14, System: DS-SCADA01, Status: SUCCESS
+```
+
+The logs indicate that Lieutenant Krennic's account has accessed several critical systems, including the HMI for Superlaser Control and the SCADA server. This raises concerns about the potential scope of the compromise.
+
+**Account Lockdown:**
+
+You decide to lock Lieutenant Krennic's account to prevent further unauthorized access. The account is disabled, and you initiate a password reset process to secure it.
+
+**Network Analysis:**
+
+You conduct a network analysis to identify any further anomalous access patterns. The analysis reveals unusual traffic between the ICS Supervisory network (10.0.3.0/24) and the ICS Control network (10.0.4.0/24), suggesting potential lateral movement.
+
+**Email/Communication Review:**
+
+You review Lieutenant Krennic's email and communication logs for any suspicious activity. The logs show that he received a holomail from an unknown source with the subject "Urgent Directive from Grand Moff Tarkin." The message contains a suspicious attachment, which could be a spear-phishing attempt.
+
+**EDR/EDX Analysis:**
+
+You check the Endpoint Detection and Response (EDR) and Endpoint Detection and XDR (EDX) systems for signs of lateral movement. The analysis indicates that there have been attempts to access other engineering workstations and control systems using Krennic's credentials.
+
+**Risk Matrix:**
+
+You consult the risk matrix for the affected devices, which highlights the criticality of the systems involved, including the super laser control and cooling subsystems. The potential impact of a compromise is deemed high, given the importance of these systems to the Death Star's operations.
+
+**Elevation to Commanding Officer:**
+
+You elevate the situation to Lieutenant Krennic's Commanding Officer, Commander Tarkin, informing him of the potential compromise and the steps being taken to mitigate the threat. Commander Tarkin acknowledges the situation and emphasizes the importance of resolving the issue swiftly to ensure the Death Star's readiness.
+
+**Next Steps:**
+
+With the account locked and the situation elevated, you may want to focus on identifying the source of the spear-phishing attempt, conducting a thorough forensic analysis of the affected systems, and implementing additional security measures to prevent further incidents. How would you like to proceed?
+Your Team: Should we send Krennik to Vader to answer? Or maybe throw him in the trash compactor?
+Isolate 10.0.3.14. Let's look at the logs for the systems that 10.0.3.14 gained access to. Let's get the details of the other anomylous activity. Take DS-ENG-WS02 off the network as well. Does the SCADA system have a failover backup?
+Facilitator: **Scenario Continuation:**
+
+While the idea of sending Lieutenant Krennic to answer to Lord Vader or throwing him in the trash compactor might be tempting, it's important to focus on the incident response process and gather all necessary evidence before taking any drastic actions. For now, let's concentrate on isolating the affected systems and gathering more information.
+
+**Isolation of Affected Systems:**
+
+You decide to isolate the engineering workstation with the IP address 10.0.3.14 (DS-ENG-WS01) from the network to prevent further unauthorized access or potential spread of malicious activity. Additionally, you take DS-ENG-WS02 off the network as a precautionary measure, given its recent access by the compromised account.
+
+**Log Analysis for Accessed Systems:**
+
+You review the logs for the systems that 10.0.3.14 gained access to, focusing on the HMI for Superlaser Control (DS-HMI-SUPERLASER1) and the SCADA server (DS-SCADA01). The logs reveal the following:
+
+**DS-HMI-SUPERLASER1 Logs:**
+```
+[2025-04-02 09:20:00] LOGIN: User ID: DS-ENG-WS01, IP: 10.0.3.14, Status: SUCCESS
+[2025-04-02 09:25:00] COMMAND EXECUTED: Adjusted super laser targeting parameters.
+[2025-04-02 09:30:00] LOGOUT: User ID: DS-ENG-WS01, IP: 10.0.3.14
+```
+
+**DS-SCADA01 Logs:**
+```
+[2025-04-02 11:05:00] LOGIN: User ID: DS-ENG-WS01, IP: 10.0.3.14, Status: SUCCESS
+[2025-04-02 11:10:00] ALERT: Unauthorized script execution attempt detected.
+[2025-04-02 11:15:00] LOGOUT: User ID: DS-ENG-WS01, IP: 10.0.3.14
+```
+
+The logs indicate that the compromised account was used to adjust super laser targeting parameters and attempt unauthorized script execution on the SCADA server.
+
+**Details of Anomalous Activity:**
+
+Further analysis of network traffic reveals that the anomalous activity includes attempts to communicate with external IP addresses, possibly indicating data exfiltration or command and control communication with Rebel operatives.
+
+**SCADA System Failover:**
+
+The SCADA system does have a failover backup, DS-SCADA-BACKUP01, which can be activated to maintain operational continuity while the primary SCADA server is being investigated and secured.
+
+**Next Steps:**
+
+With the compromised systems isolated and initial log analysis completed, you may want to focus on activating the SCADA failover, conducting a deeper forensic analysis of the affected systems, and identifying any additional compromised accounts or systems. How would you like to proceed?
+Your Team: What is the new target!? What is the external IP? Let's review the activity from that IP? Then block that IP. Let's "cosmo-locate" where the IP is coming from and change the new super-laser coordinates to that! Did anyone else get that spear phishing attempt?
+Facilitator: **Scenario Continuation:**
+
+In light of the unauthorized adjustments to the super laser targeting parameters, it's crucial to determine the new target and the source of the external communication. This will help you understand the scope of the threat and take appropriate countermeasures.
+
+**New Target Identification:**
+
+Upon reviewing the logs from DS-HMI-SUPERLASER1, you discover that the super laser targeting parameters were altered to focus on a remote, uninhabited asteroid field. This suggests that the Rebels may have been attempting to divert the Death Star's firepower away from a strategic target, possibly to protect a Rebel base or fleet.
+
+**External IP Analysis:**
+
+The network analysis reveals that the anomalous activity involved communication with an external IP address: 192.168.100.42. You review the activity logs related to this IP:
+
+```
+[2025-04-02 10:45:00] OUTBOUND CONNECTION: Source IP: 10.0.3.14, Destination IP: 192.168.100.42, Port: 443
+[2025-04-02 10:50:00] DATA TRANSFER: Source IP: 10.0.3.14, Destination IP: 192.168.100.42, Data Size: 500MB
+[2025-04-02 11:00:00] OUTBOUND CONNECTION: Source IP: 10.0.3.14, Destination IP: 192.168.100.42, Port: 80
+```
+
+The logs indicate significant data transfer to the external IP, suggesting potential data exfiltration.
+
+**Blocking the External IP:**
+
+You instruct the network team to block the external IP address 192.168.100.42 at the perimeter firewall to prevent further communication with the suspected Rebel node.
+
+**Cosmo-location of the External IP:**
+
+Using advanced cosmo-location techniques, you determine that the external IP is originating from a sector known to be frequented by Rebel Alliance forces. The coordinates align with a known Rebel supply route, indicating that the communication may have been with a Rebel ship or outpost.
+
+**Adjusting Super Laser Coordinates:**
+
+In response to the threat, you consider adjusting the super laser coordinates to target the location of the external IP. However, this action requires authorization from high command, given the potential implications of firing on a location without confirmed intelligence.
+
+**Spear Phishing Investigation:**
+
+You conduct a review of the email logs to determine if any other personnel received the spear-phishing attempt. The investigation reveals that several mid-level officers received similar holomail messages, all purporting to be from Grand Moff Tarkin. The messages contained malicious attachments designed to compromise their accounts.
+
+**Next Steps:**
+
+With the external IP blocked and the spear-phishing attempt identified, you may want to focus on securing the compromised accounts, conducting a broader investigation into the spear-phishing campaign, and coordinating with high command for further actions. How would you like to proceed?
+Your Team: What was the file/data that was transferred? Appeal the request to change targets to Lord Vader. Did anyone else click the attachment? Reset the passwords to all accounts that got the emai. Inform the users though holocomm. Check the physical security around the cooling system and super laser. Let's report this to the DS-ISAC (Death Star Information Sharing and Analysis Center)
+
+What was the script that was tried to run?
+Facilitator: **Scenario Continuation:**
+
+To fully understand the scope of the breach, you focus on identifying the data that was transferred, assessing the impact of the spear-phishing campaign, and ensuring the physical security of critical systems.
+
+**Data Transfer Analysis:**
+
+Upon analyzing the data logs, you discover that the transferred data included schematics of the super laser's power routing and beam-focusing protocols, as well as security rosters and system access logs. This information could be invaluable to the Rebel Alliance in planning further attacks or sabotage.
+
+**Appeal to Lord Vader:**
+
+You prepare a formal request to Lord Vader, seeking authorization to adjust the super laser's targeting coordinates to the location of the external IP. The request emphasizes the potential threat posed by the Rebel communication node and the need for decisive action to neutralize it.
+
+**Spear Phishing Impact:**
+
+The investigation into the spear-phishing campaign reveals that several officers clicked on the malicious attachment, resulting in the compromise of their accounts. You initiate a password reset for all affected accounts and inform the users via holocomm, advising them of the situation and the steps being taken to secure their accounts.
+
+**Physical Security Check:**
+
+You instruct the security team to conduct a thorough inspection of the physical security measures around the cooling system and super laser. The team reports that all access points are secure, and there are no signs of tampering or unauthorized entry. However, they recommend increasing patrols and monitoring to ensure continued security.
+
+**Report to DS-ISAC:**
+
+You compile a detailed report of the incident and submit it to the Death Star Information Sharing and Analysis Center (DS-ISAC). The report includes information on the unauthorized access, data exfiltration, spear-phishing campaign, and the steps taken to mitigate the threat. DS-ISAC acknowledges the report and offers to assist with further analysis and threat intelligence sharing.
+
+**Script Analysis:**
+
+The unauthorized script that was attempted to run on the SCADA server was designed to alter the control logic for the super laser's power regulation. The script aimed to disrupt the power flow, potentially rendering the super laser inoperable. Fortunately, the script execution was detected and blocked by the SCADA system's security measures.
+
+**Next Steps:**
+
+With the immediate threats addressed, you may want to focus on conducting a comprehensive forensic analysis of the affected systems, enhancing security measures to prevent future incidents, and coordinating with DS-ISAC for ongoing threat intelligence. How would you like to proceed?
+Your Team: The data was exfiltrated to the remote IP location so this justifies retargeting the laser to that location. Let's check video feeds to see if maybe there was an insider going around and doing all of this, or even someone that infiltrated. Let's reset the cooling system and turbo lasers to known safe parameters... AND THEN RETARGET.
+Facilitator: **Scenario Continuation:**
+
+With the justification for retargeting the super laser established due to the data exfiltration to the remote IP location, you proceed with the necessary steps to ensure the Death Star's systems are secure and operational before executing the retargeting.
+
+**Video Feed Review:**
+
+You instruct the security team to review the video surveillance feeds around the critical areas, including the cooling system, super laser control room, and engineering workstations. The review reveals footage of an unfamiliar individual accessing the engineering workstations and control panels. The individual appears to be wearing an Imperial uniform but does not match any known personnel records, suggesting a possible infiltration by a Rebel operative.
+
+**System Reset:**
+
+To ensure the systems are operating within safe parameters, you initiate a reset of the cooling system and turbo lasers. The engineering team confirms that the systems have been restored to their default configurations, ensuring stability and readiness for operation.
+
+**Retargeting the Super Laser:**
+
+With the systems secured and operational, you proceed with retargeting the super laser to the location of the external IP. The new coordinates are input into the super laser targeting system, aligning the weapon with the suspected Rebel communication node.
+
+**Authorization from Lord Vader:**
+
+Your appeal to Lord Vader for authorization to retarget the super laser is met with approval. Lord Vader emphasizes the importance of eliminating any potential threats to the Empire and commends the team for their swift and decisive actions.
+
+**Next Steps:**
+
+With the super laser retargeted and the systems secured, you may want to focus on capturing the infiltrator identified in the video feeds, conducting a thorough investigation into the breach, and implementing additional security measures to prevent future incidents. How would you like to proceed?
+Your Team: Are there any other systems that the imposter accessed? What other systems do the compromised officers have acces to? Send patrols to find the imposter. LOCK DOWN the station so nobody can escape. Send an engineering crew to patch that little hole in the exhaust system that could be exploited by the rebels.
+Facilitator: **Scenario Continuation:**
+
+With the discovery of an infiltrator aboard the Death Star, it's crucial to assess the full extent of their access and ensure the station's security is airtight.
+
+**Access Investigation:**
+
+You conduct a thorough review of the access logs to determine which other systems the imposter may have accessed. The investigation reveals that the imposter used compromised credentials to access several critical systems, including:
+
+- **DS-PLC-SUPERLASER1**: Superlaser Main PLC
+- **DS-PLC-TRACTOR1**: Tractor Beam Main PLC
+- **DS-RTU-SECURITY1**: Security Systems RTU
+
+The compromised officers' accounts also have access to various systems, including the ICS Supervisory network and several engineering workstations. This highlights the potential for further unauthorized access and manipulation of critical systems.
+
+**Station Lockdown:**
+
+You initiate a full lockdown of the Death Star to prevent the imposter from escaping. All docking bays are sealed, and security checkpoints are established at key locations throughout the station. The lockdown ensures that no unauthorized personnel can leave or enter the station without proper clearance.
+
+**Patrol Deployment:**
+
+Security patrols are dispatched to locate and apprehend the imposter. The patrols are equipped with the latest scanning technology to detect any unauthorized personnel and are instructed to report any suspicious activity immediately.
+
+**Exhaust System Patch:**
+
+An engineering crew is sent to address the vulnerability in the thermal exhaust port. The crew works diligently to reinforce the exhaust system, ensuring that it cannot be exploited by Rebel forces. The patch is completed successfully, eliminating a potential weak point in the Death Star's defenses.
+
+**Next Steps:**
+
+With the station on lockdown and security measures in place, you may want to focus on conducting a comprehensive sweep of the station to ensure no other infiltrators are present, enhancing security protocols to prevent future breaches, and coordinating with Imperial Intelligence for further investigation. How would you like to proceed?
+Your Team: Inspect the backups to be sure they are not corrupted or compromised. Are we able to operate in a depricated state? Lets fire the laser at the new coordinates to elimate the threat.
+Facilitator: **Scenario Continuation:**
+
+To ensure the integrity of the Death Star's operations and prepare for the firing of the super laser, you decide to inspect the backups and assess the station's operational capabilities.
+
+**Backup Inspection:**
+
+You instruct the IT team to conduct a thorough inspection of the system backups, focusing on the critical systems such as the super laser control, SCADA server, and security systems. The inspection reveals that the backups are intact and show no signs of corruption or compromise. This ensures that the Death Star can be restored to a known good state if needed.
+
+**Operational Assessment:**
+
+The engineering team conducts an assessment to determine if the Death Star can operate in a deprecated state, should any systems be compromised during the incident. The assessment confirms that the station can maintain essential functions, including life support, navigation, and defense systems, even if some systems are temporarily offline. This provides confidence in the station's resilience and ability to continue operations.
+
+**Firing the Super Laser:**
+
+With the systems secured and the new coordinates set, you prepare to fire the super laser at the location of the external IP to eliminate the potential Rebel threat. The command is given, and the super laser charges to full power. The firing sequence is initiated, and the super laser unleashes its devastating energy at the targeted coordinates.
+
+**Outcome:**
+
+The super laser successfully strikes the location of the external IP, neutralizing the suspected Rebel communication node. The threat is eliminated, and the Death Star remains secure and operational.
+
+**Next Steps:**
+
+With the immediate threat addressed, you may want to focus on conducting a full debrief of the incident, implementing lessons learned to enhance security protocols, and coordinating with Imperial Intelligence for ongoing threat monitoring. How would you like to proceed?
