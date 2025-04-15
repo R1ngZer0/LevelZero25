@@ -1,0 +1,38 @@
+Specific Requirements:
+
+    - The application should run on Windows, Linux, and MacOS.
+    - Each individual feature/functionality should be a tool so that it can be used by different agents.
+    - Tools code goes in the /Code/tools folder.
+    - Agents code goes in the /Code/agents folder.
+    - Pydantic models go in the /Code/models folder.
+    - User provided vulnerability scans go in the /Data/vulnerability_scans folder.
+    - Nmap scans done by the application should export in xml format and go in the /Data/nmap_scans folder.
+    - Nmap scans should take a user prompt. That prompt should go to the LLM to determine the type of scan to perform and the exact parameters to use. The LLM should return a structured response with the scan type, scan parameters, and a timeout, which will be used to run the scan (which should be a tool).
+    - User provided PCAP files go in the /Data/pcap_files folder.
+    - The application should use the following LLM models:
+        - gpt-4o
+        - Llama3.1:8b via Ollama
+        - The model should be set in the main menu.
+    - The application should use the following database:
+        - MongoDB
+    - The application should use the following vector database:
+        - Chroma
+    - Environment variables should be stored in /Code/.env.
+    - Other configuration should be stored in /Code/config.py.
+    - Database helper files go in the /Code/utils folder.
+    - The application should use the following text embedding models:
+        - text-embedding-3-small via OpenAI
+        - nomic-text-embed via Ollama
+    - When the application processes an data file, it should process the data row by row, or record by record, sending each on to the LLM to return the appropriate structured response according to the data type. That structured response should be stored in the database as well as the Chroma vector database. The menu should have optioins to process each type of data, and when selected, that agent/tool should look in the appropriate folder and process each file in the folder.
+    - Vulnerabiility scans and network scans should be xml files.
+    - PCAP files should be pcap files.
+    - Knowledgebase documents should be in pdf format.
+    - Knowledgebase documents should be be processed from the /Data/knowledge_base folder.
+    - The application should use the following UI:
+        - CLI
+    - The application should use the following validation framework:
+        - Pydantic
+    - The application should use the following API framework:
+        - FastAPI
+    - For the chat feature, the application should use an LLM agent to determine whether data from the database is needed or if a vector search is needed. If a vector search is needed, the agent should determine the search parameters and the LLM should return the structured response. If data from the database is needed, the agent should determine the data that is needed and the LLM should return the structured response. The difference is whether the user is asking a relatively simple question that can be aswered with a database query or if the question is more complex and requires a vector search.
+    - The knowledgebase will contain user provided documents such as cybersecurity standards, policies, threat reports, etc. If the user chat query is related to the knowlegebase, the application should use a RAG agent to answer the question, based on the applicable documents in the knowledgebase.
