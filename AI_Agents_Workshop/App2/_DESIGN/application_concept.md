@@ -49,3 +49,5 @@ Specific Requirements:
         - Pydantic AI
     - The application should use the following API framework:
         - Whatever works best with Pydantic AI
+    - If task management is needed, use Celery and Redis
+    - Use Alembic for PosgreSQL management
