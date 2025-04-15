@@ -10,7 +10,9 @@
 - Mocking data is only needed for tests, never mock data for dev or prod
 - Never add stubbing or fake data patterns to code that affects the dev or prod environments
 - Never overwrite my .env file or config files without first asking and confirming
-- Always check to be sure new code won't break other functionality that is related to the affected code
+- Always check to be sure new code won't break other features or functionality
 - Before creating new systems, functions, or methods, always check to see if that functionality exists in other code first. Check to be sure that updating that code won't break other functionality. 
 
 Any new files that are created need to have a full description of what the file does, at the top as a """ comment.
+
+Update the progress document regularly as applicable.

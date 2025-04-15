@@ -21,6 +21,7 @@ https://pydantic.dev/
 
 Pydantic AI:
 https://ai.pydantic.dev/
+https://github.com/pydantic/pydantic-ai
 
 Neo4j Graph Database:
 https://neo4j.com/
