@@ -19,6 +19,9 @@ https://www.langchain.com/
 Pydantic:
 https://pydantic.dev/
 
+Pydantic AI:
+https://ai.pydantic.dev/
+
 Neo4j Graph Database:
 https://neo4j.com/
 
