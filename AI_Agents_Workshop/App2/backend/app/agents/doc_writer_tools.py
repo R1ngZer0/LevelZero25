@@ -4,7 +4,10 @@ Defines Pydantic AI tools used by the Document Writer Agent.
 
 from pydantic import BaseModel, Field
 from typing import List
-from pydantic_ai import Agent, tool
+# from pydantic_ai import Agent, tool # Original import - causes ImportError
+from pydantic_ai import Agent # Keep Agent import
+# from pydantic_ai.tool import tool # Import attempt 1 - Failed
+# from pydantic_ai.decorators import tool # Import attempt 2 - Failed
 from app.llm_clients import get_llm_client
 import os
 from docx import Document
@@ -24,18 +27,9 @@ class DocumentOutline(BaseModel):
     title: str = Field(..., description="The main title of the document.")
     topics: List[OutlineTopic] = Field(..., description="An ordered list of topics/sections for the document.")
 
-@tool
-def create_document_outline(prompt: str, context: str | None = None, mode: str = "cloud") -> DocumentOutline:
-    """Generates a structured document outline based on a user prompt and optional context.
-
-    Args:
-        prompt: The user's request for the document (e.g., 'Write a report on AI ethics').
-        context: Optional relevant context retrieved from the knowledge base.
-        mode: The operational mode ('cloud' or 'local') for LLM selection.
-    Returns:
-        A DocumentOutline object containing the title and list of topics.
-    """
-    llm_client = get_llm_client(mode)
+def create_document_outline(prompt: str, context: str | None = None) -> DocumentOutline:
+    """Generates a structured document outline based on a user prompt and optional context using OpenAI."""
+    llm_client = get_llm_client()
     
     system_prompt = (
         "You are an expert document planner. Based on the user's request and any provided context, "
@@ -47,14 +41,20 @@ def create_document_outline(prompt: str, context: str | None = None, mode: str =
     if context:
         combined_input += f"\n\nRelevant Context:\n{context}"
 
+    # Restore pydantic_ai.Agent usage
     outline_generator = Agent(
         llm=llm_client,
         system_prompt=system_prompt,
-        output_model=DocumentOutline 
+        output_model=DocumentOutline
     )
-    
+    # outline_generator = None # Placeholder - Removed
+
     try:
-        outline: DocumentOutline = outline_generator.invoke(combined_input)
+        outline: DocumentOutline = outline_generator.invoke(combined_input) # Restore original invoke
+        # Mock/Placeholder implementation until Agent is refactored - Removed
+        # print(f"Placeholder: Would generate outline for prompt: '{prompt[:50]}...'")
+        # Returning a dummy outline to avoid breaking the structure for now
+        # outline = DocumentOutline(title="Placeholder Title", topics=[OutlineTopic(heading="Placeholder Topic 1"), OutlineTopic(heading="Placeholder Topic 2")])
         print(f"Generated outline for prompt: '{prompt[:50]}...'")
         return outline
     except Exception as e:
@@ -72,17 +72,15 @@ class SectionContent(BaseModel):
     heading: str = Field(..., description="The heading of the section this content belongs to.")
     content: str = Field(..., description="The written text content for the section.")
 
-@tool
 def write_document_section(
     topic_heading: str,
     full_prompt: str, 
     document_title: str, 
     previous_sections: List[SectionContent] = [],
     context: str | None = None, 
-    mode: str = "cloud"
 ) -> SectionContent:
     """Writes the content for a specific section of a document based on its heading, 
-    the overall prompt, optional context, and previously written sections.
+    the overall prompt, optional context, and previously written sections using OpenAI.
 
     Args:
         topic_heading: The heading of the section to write.
@@ -90,11 +88,10 @@ def write_document_section(
         document_title: The main title of the document.
         previous_sections: Content of sections written before this one, for context.
         context: Optional relevant context retrieved from the knowledge base.
-        mode: The operational mode ('cloud' or 'local') for LLM selection.
     Returns:
         A SectionContent object containing the heading and written content.
     """
-    llm_client = get_llm_client(mode)
+    llm_client = get_llm_client()
     
     system_prompt = (
         "You are an expert technical writer. Your task is to write a specific section of a document. "
@@ -115,19 +112,20 @@ def write_document_section(
             combined_input += f"### {sec.heading}\n{sec.content}\n\n"
     combined_input += f"\nWrite the content for the section: '{topic_heading}'"
     
-    # Use Agent instead of PydanticAI
+    # Restore pydantic_ai.Agent usage
     section_writer_llm = Agent(
         llm=llm_client,
         system_prompt=system_prompt,
         output_model=SectionContent
     )
+    # section_writer_llm = None # Placeholder - Removed
 
     try:
-        # PydanticAI invoke expects the LLM to return JSON conforming to the model.
-        # The prompt instructs the LLM to focus on the content, but PydanticAI handles the wrapping.
-        # We might need to adjust the prompt if the LLM struggles to include the heading correctly.
-        generated_section: SectionContent = section_writer_llm.invoke(combined_input)
-        
+        generated_section: SectionContent = section_writer_llm.invoke(combined_input) # Restore original invoke
+        # Mock/Placeholder implementation until Agent is refactored - Removed
+        # print(f"Placeholder: Would generate content for section: '{topic_heading}'")
+        # generated_section = SectionContent(heading=topic_heading, content=f"Placeholder content for {topic_heading}.")
+
         # Ensure the heading matches the requested topic (LLM might hallucinate)
         if generated_section.heading != topic_heading:
              print(f"Warning: LLM generated section with heading '{generated_section.heading}', expected '{topic_heading}'. Overwriting heading.")
@@ -148,7 +146,6 @@ class ReportOutput(BaseModel):
     file_path: str = Field(..., description="The relative path within the knowledgebase where the final .docx file was saved.")
     full_text: str = Field(..., description="The full text content of the document, assembled from all sections.")
 
-@tool
 def format_and_save_report(
     document_title: str,
     sections: List[SectionContent],

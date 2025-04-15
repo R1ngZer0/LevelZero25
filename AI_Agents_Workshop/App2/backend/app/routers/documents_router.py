@@ -12,7 +12,7 @@ router = APIRouter()
 class DocumentCreateRequest(BaseModel):
     """Request model for initiating document creation."""
     prompt: str
-    mode: str = "cloud" # Allow specifying mode
+    # mode: str = "cloud" # Allow specifying mode - Removed
 
 @router.post("/create", response_model=DocumentCreationResult, status_code=202) # Use 202 Accepted for background tasks
 def create_document_endpoint(
@@ -21,7 +21,8 @@ def create_document_endpoint(
 ):
     """Initiates the document creation process in the background."""
     # Add the potentially long-running task to the background
-    background_tasks.add_task(create_document, request.prompt, request.mode)
+    # background_tasks.add_task(create_document, request.prompt, request.mode)
+    background_tasks.add_task(create_document, request.prompt) # Removed mode
     
     # Immediately return an accepted response
     return DocumentCreationResult(

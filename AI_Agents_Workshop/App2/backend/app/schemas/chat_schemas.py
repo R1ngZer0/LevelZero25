@@ -22,7 +22,6 @@ class ConversationBase(BaseModel):
 class UserMessageInput(BaseModel):
     """Input schema for receiving a user message."""
     content: str = Field(..., description="The text content of the user's message.")
-    mode: str = Field(default="cloud", description="The operational mode (cloud or local) for LLM selection.")
 
 # --- Schemas for Database Interaction (used by CRUD) ---
 class ChatMessageCreate(ChatMessageBase):
@@ -36,7 +35,7 @@ class ChatMessageInDB(ChatMessageBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True # Allow mapping from SQLAlchemy models
+        from_attributes = True # Allow mapping from SQLAlchemy models
 
 class ConversationCreate(ConversationBase):
     """Schema for creating a conversation in the DB."""
@@ -49,7 +48,7 @@ class ConversationInDBBase(ConversationBase):
     # title: Optional[str] # Include if added to model
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- Schemas for API Output --- 
 class AssistantMessageOutput(BaseModel):

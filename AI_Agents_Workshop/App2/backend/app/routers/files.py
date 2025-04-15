@@ -7,10 +7,10 @@ from sqlalchemy.orm import Session
 from typing import List
 import logging
 
-from backend.app import schemas, crud, models
-from backend.app.db.session import get_db
-from backend.app.config import get_settings
-from backend.app.services import file_processor, vector_store # Ensure vector_store is imported
+from app import schemas, crud, models
+from app.db.session import get_db
+from app.config import get_settings
+from app.services import file_processor, vector_store # Ensure vector_store is imported
 
 router = APIRouter()
 settings = get_settings()

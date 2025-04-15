@@ -18,6 +18,12 @@ sys.path.insert(0, project_root)
 # Adjust the import path as necessary
 from backend.app.models.base import Base # Placeholder for actual model base
 
+# --- Import all models here so Base knows about them for autogenerate --- 
+from backend.app.models.file import File
+from backend.app.models.vector_embedding import VectorEmbedding
+from backend.app.models.chat import Conversation, ChatMessage
+# --- End model imports --- 
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config

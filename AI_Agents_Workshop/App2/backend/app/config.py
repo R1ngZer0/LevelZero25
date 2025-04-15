@@ -8,7 +8,7 @@ from typing import Optional
 class Settings(BaseSettings):
     """Defines application settings loaded from environment variables."""
     # General
-    APP_MODE: str = "LOCAL" # Options: LOCAL, CLOUD
+    # APP_MODE: str = "CLOUD" # No longer needed, only CLOUD supported
     KNOWLEDGE_BASE_PATH: str = "./knowledgebase"
 
     # Database
@@ -24,10 +24,10 @@ class Settings(BaseSettings):
     OPENAI_LLM_MODEL: str = "gpt-4.1"
     OPENAI_EMBEDDING_MODEL: str = "text-embedding-3-small"
 
-    # Ollama (Local Mode)
-    OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_LLM_MODEL: str = "llama3.1:8b"
-    OLLAMA_EMBEDDING_MODEL: str = "nomic-embed-text"
+    # Ollama settings removed
+    # OLLAMA_BASE_URL: str = "http://localhost:11434"
+    # OLLAMA_LLM_MODEL: str = "llama3.1:8b"
+    # OLLAMA_EMBEDDING_MODEL: str = "nomic-embed-text"
 
     model_config = SettingsConfigDict(
         env_file=".env",

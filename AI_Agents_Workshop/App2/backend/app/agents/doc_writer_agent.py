@@ -19,9 +19,9 @@ from app.agents.doc_writer_tools import (
 from app.agents.chatbot_agent import retrieve_rag_context # Use chatbot's RAG for now
 # Need functions to handle vectorization based on file path/content
 # from app.services.vector_store import add_vector_embedding # Requires DB session and chunking
-from app.services.file_processing import extract_text_from_file, chunk_text # Need these
-from app.services.vector_store_service import add_embeddings_for_chunks # Assume a higher-level service
-from app.services import file_service # To get file metadata
+from app.services.file_processor import extract_text, chunk_text # Corrected import
+# from app.services.vector_store_service import add_embeddings_for_chunks # Assume a higher-level service # Removed import for non-existent module
+from app.crud import crud_file # Corrected import for file CRUD operations
 from app.db.session import get_db # For DB session
 from app.llm_clients import get_embedding_client # To get model name
 
@@ -33,8 +33,8 @@ class DocumentCreationResult(BaseModel):
     message: str
     file_path: str | None = None # Path to the final .docx file
 
-def create_document(prompt: str, mode: str = "cloud") -> DocumentCreationResult:
-    """Orchestrates the document creation process."""
+def create_document(prompt: str) -> DocumentCreationResult:
+    """Orchestrates the document creation process using OpenAI."""
     print(f"--- Starting Document Creation for Prompt: '{prompt[:50]}...' ---")
     approved_sections: List[SectionContent] = []
     document_title = "Untitled Document"
@@ -49,7 +49,7 @@ def create_document(prompt: str, mode: str = "cloud") -> DocumentCreationResult:
 
         # 2. Create Outline
         print("Generating outline...")
-        outline = create_document_outline(prompt=prompt, context=rag_context, mode=mode)
+        outline = create_document_outline(prompt=prompt, context=rag_context)
         document_title = outline.title
         print(f"Outline generated: Title - '{document_title}', Topics - {[t.heading for t in outline.topics]}")
 
@@ -78,7 +78,6 @@ def create_document(prompt: str, mode: str = "cloud") -> DocumentCreationResult:
                     document_title=document_title,
                     previous_sections=approved_sections, # Pass previously approved sections
                     context=rag_context, 
-                    mode=mode
                 )
                 
                 # Submit section to QA
@@ -87,7 +86,7 @@ def create_document(prompt: str, mode: str = "cloud") -> DocumentCreationResult:
                     original_prompt=f"Write content for section: {topic.heading} (part of document: {document_title})",
                     context=rag_context # Pass relevant context
                 )
-                qa_result = review_content(qa_input, mode=mode)
+                qa_result = review_content(qa_input)
                 
                 if qa_result.is_approved:
                     print(f"QA approved section '{topic.heading}' on attempt {attempt + 1}")
@@ -124,12 +123,13 @@ def create_document(prompt: str, mode: str = "cloud") -> DocumentCreationResult:
 
             # Assume file_service can get or create file metadata based on path
             # This might need adjustment based on file_service implementation
-            file_meta = file_service.get_file_by_path(db, final_report.file_path)
+            file_meta = crud_file.get_file_by_relative_path(db, relative_path=final_report.file_path) # Corrected usage
             if not file_meta:
                  # If the file wasn't tracked before (likely), create metadata entry
                  # Need a function like `upsert_file_metadata` or similar in file_service
-                 print(f"Warning: File metadata not found for {final_report.file_path}. Vectorization might fail without file_id.")
+                 # print(f"Warning: File metadata not found for {final_report.file_path}. Vectorization might fail without file_id.")
                  # Simplified: skip vectorization if metadata missing. Needs proper handling.
+                 # Raise a more specific error or handle metadata creation
                  raise ValueError(f"File metadata not found for generated document: {final_report.file_path}")
 
             # Use the full text returned by the report writer tool

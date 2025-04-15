@@ -4,8 +4,8 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import Any # For placeholder response
 
-from backend.app import schemas
-from backend.app.agents import router as router_agent # Import the router agent logic
+from app import schemas
+from app.agents import router as router_agent # Import the router agent logic
 
 router = APIRouter()
 logger = logging.getLogger(__name__)

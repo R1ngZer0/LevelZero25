@@ -7,6 +7,7 @@ import uuid
 
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
+from sqlalchemy.orm import selectinload
 
 from app.models.chat import Conversation, ChatMessage
 from app.schemas.chat_schemas import ConversationCreate, ChatMessageCreate
@@ -16,15 +17,20 @@ from app.schemas.chat_schemas import ConversationCreate, ChatMessageCreate
 
 def create_conversation(db: Session, conversation: ConversationCreate) -> Conversation:
     """Creates a new conversation record in the database."""
-    db_conversation = Conversation(**conversation.dict())
+    db_conversation = Conversation(**conversation.model_dump())
     db.add(db_conversation)
     db.commit()
     db.refresh(db_conversation)
     return db_conversation
 
 def get_conversation(db: Session, conversation_id: uuid.UUID) -> Optional[Conversation]:
-    """Retrieves a conversation by its ID."""
-    return db.query(Conversation).filter(Conversation.id == conversation_id).first()
+    """Retrieves a conversation by its ID, eagerly loading messages."""
+    return (
+        db.query(Conversation)
+        .options(selectinload(Conversation.messages))
+        .filter(Conversation.id == conversation_id)
+        .first()
+    )
 
 def list_conversations(db: Session, skip: int = 0, limit: int = 100) -> List[Conversation]:
     """Retrieves a list of conversations, ordered by creation date descending."""
@@ -37,7 +43,7 @@ def list_conversations(db: Session, skip: int = 0, limit: int = 100) -> List[Con
 def add_message(db: Session, conversation_id: uuid.UUID, message: ChatMessageCreate) -> ChatMessage:
     """Adds a new chat message linked to a conversation."""
     db_message = ChatMessage(
-        **message.dict(), 
+        **message.model_dump(),
         conversation_id=conversation_id
     )
     db.add(db_message)

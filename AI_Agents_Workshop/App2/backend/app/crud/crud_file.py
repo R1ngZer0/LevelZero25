@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, delete
 from typing import List, Optional
 
-from backend.app.models import File
-from backend.app.schemas import FileCreate, FileUpdate
+from app.models import File
+from app.schemas import FileCreate, FileUpdate
 
 def create_file(db: Session, file_in: FileCreate, relative_path: str) -> File:
     """Creates a new file record in the database."""

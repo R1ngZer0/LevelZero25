@@ -68,9 +68,17 @@ function Chat() {
       // Assuming response.data is the ConversationDetailOutput schema
       setMessages(response.data.messages || []); 
     } catch (err) {
-      console.error(`Error fetching messages for ${id}:`, err);
-      setError(`Failed to load messages: ${err.response?.data?.detail || err.message}`);
-      setMessages([]); // Clear messages on error
+      // Handle 404 specifically: It means a new chat or invalid ID
+      if (err.response && err.response.status === 404) {
+        console.log(`Conversation ${id} not found (or is new), starting empty.`);
+        setMessages([]); // Treat as empty chat
+        setError(null); // Ensure no error is shown for 404
+      } else {
+        // Handle other errors as before
+        console.error(`Error fetching messages for ${id}:`, err);
+        setError(`Failed to load messages: ${err.response?.data?.detail || err.message}`);
+        setMessages([]); // Clear messages on error
+      }
     } finally {
       setLoading(false);
     }

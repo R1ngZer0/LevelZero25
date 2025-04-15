@@ -101,7 +101,7 @@ def process_file_and_vectorize(db_file_id: int, db_session): # Needs DB session
     from app import crud
     from app.services import vector_store
 
-    db_file = crud.file.get_file(db_session, db_file_id)
+    db_file = crud.crud_file.get_file(db_session, db_file_id)
     if not db_file:
         logger.error(f"File with ID {db_file_id} not found for processing.")
         return
@@ -111,7 +111,7 @@ def process_file_and_vectorize(db_file_id: int, db_session): # Needs DB session
 
     try:
         # 1. Update status to processing
-        crud.file.update_file(db_session, db_file, schemas.file.FileUpdate(is_processing=True))
+        crud.crud_file.update_file(db_session, db_file, schemas.file.FileUpdate(is_processing=True))
 
         # 2. Extract Text
         text_content = extract_text(full_path, db_file.media_type)
@@ -134,14 +134,14 @@ def process_file_and_vectorize(db_file_id: int, db_session): # Needs DB session
         logger.info(f"Finished generating and storing embeddings for file ID: {db_file.id}")
 
         # 5. Update status to vectorized
-        crud.file.update_file(db_session, db_file, schemas.file.FileUpdate(is_processing=False, is_vectorized=True))
+        crud.crud_file.update_file(db_session, db_file, schemas.file.FileUpdate(is_processing=False, is_vectorized=True))
         logger.info(f"Successfully processed and vectorized file ID: {db_file.id}")
 
     except Exception as e:
         logger.error(f"Error processing file ID {db_file.id}: {e}", exc_info=True)
         # Update status with error
         error_message = str(e)
-        crud.file.update_file(db_session, db_file, schemas.file.FileUpdate(is_processing=False, is_vectorized=False, vectorization_error=error_message))
+        crud.crud_file.update_file(db_session, db_file, schemas.file.FileUpdate(is_processing=False, is_vectorized=False, vectorization_error=error_message))
 
     finally:
         # Ensure session is managed appropriately if called as background task

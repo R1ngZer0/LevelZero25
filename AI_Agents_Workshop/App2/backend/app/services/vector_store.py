@@ -7,10 +7,10 @@ from typing import List, Optional
 import logging
 
 # Use centralized clients
-from backend.app.llm_clients import get_embedding_client
+from app.llm_clients import get_embedding_client
 
-from backend.app.models import File, VectorEmbedding
-from backend.app.config import get_settings
+from app.models import File, VectorEmbedding
+from app.config import get_settings
 
 settings = get_settings()
 logger = logging.getLogger(__name__)
@@ -68,23 +68,33 @@ def find_similar_embeddings(
     # embedding_model_name: str, # No longer needed, use the configured client
     limit: int = 5
 ) -> List[VectorEmbedding]:
-    """Finds vector embeddings similar to the query text using the configured model."""
+    """Finds vector embeddings similar to the query text using the configured OpenAI model."""
+    # embedding_model_name = "unknown" # No longer needed as default
+    query_embedding_np = None
     try:
-        embedding_client = get_embedding_client() # Get configured client
+        embedding_client = get_embedding_client() # Get configured OpenAI client
         embedding_model_name = embedding_client.model # Get model name from client
 
-        embedding_result = embedding_client.create(input=[query_text])
-        if not embedding_result or not embedding_result.embeddings:
+        # Langchain Embeddings use embed_query for single strings
+        query_embedding = embedding_client.embed_query(query_text)
+        
+        if not query_embedding:
+             # Log error and re-raise or return empty? Re-raising is clearer.
+             logger.error(f"Query embedding generation returned empty result for model {embedding_model_name}")
              raise ValueError("Query embedding generation failed or returned empty result.")
-        query_embedding = embedding_result.embeddings[0]
+             
         query_embedding_np = np.array(query_embedding, dtype=np.float32)
         logger.info(f"Generated {len(query_embedding)}-dim query embedding using {embedding_model_name}")
 
     except Exception as e:
-        logger.error(f"Failed to generate query embedding using {embedding_model_name}: {e}", exc_info=True)
-        return []
+        # Log the error using the model name if available
+        logger.error(f"Failed to generate query embedding using {embedding_model_name if 'embedding_model_name' in locals() else 'configured OpenAI model'}: {e}", exc_info=True)
+        # return [] # Don't just return empty, raise the error
+        raise # Re-raise the exception to signal failure
 
+    # This part only runs if embedding succeeded
     # Ensure the search uses the same model embeddings that the client is configured for
+    # This where clause might be redundant now if only one model is ever used, but harmless
     stmt = (
         select(VectorEmbedding)
         .where(VectorEmbedding.embedding_model == embedding_model_name)

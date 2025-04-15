@@ -1,10 +1,10 @@
 # Multi-Agent AI Application
 
-This project implements a multi-agent AI application featuring a chatbot and a document writer, leveraging a vector knowledge base built from user-uploaded files. It uses FastAPI for the backend, React with Material UI for the frontend, and PostgreSQL with pgvector for vector storage.
+This project implements a multi-agent AI application featuring a chatbot and a document writer, leveraging a vector knowledge base built from user-uploaded files. It uses FastAPI for the backend (with PydanticAI and OpenAI), React with Material UI for the frontend, and PostgreSQL with pgvector for vector storage.
 
 ## Features
 
-*   **Dual Modes:** Operates in 'Cloud' mode (using OpenAI APIs) or 'Local' mode (using Ollama).
+*   **OpenAI Integration:** Uses OpenAI APIs for LLM and embedding tasks.
 *   **Knowledge Base:** Upload files (.txt, .pdf, .docx) to build a searchable vector knowledge base.
 *   **Chat Interface:** Interact with a chatbot that utilizes the knowledge base (RAG) and conversation history.
 *   **Document Writer Agent:** Generate structured documents (.docx) based on prompts, using the knowledge base and a multi-step agent process (outline -> section writing with QA -> formatting).
@@ -40,9 +40,7 @@ This project implements a multi-agent AI application featuring a chatbot and a d
 *   **Python:** 3.10 or higher recommended.
 *   **Node.js:** LTS version recommended (e.g., v18+).
 *   **Docker & Docker Compose:** Required for running the PostgreSQL database.
-*   **(Optional) Ollama:** Required if you want to run in 'Local' mode. Follow Ollama installation instructions and pull required models (`llama3.1:8b`, `nomic-text-embed`).
-*   **API Keys:**
-    *   OpenAI API Key (if using 'Cloud' mode).
+*   **API Keys:** OpenAI API Key.
 
 ### 1. Clone the Repository
 
@@ -66,23 +64,17 @@ pip install -r requirements.txt
 
 # Configure Environment Variables
 # IMPORTANT: Create a .env file in the 'backend' directory.
-# Copy the structure from backend/.env.example (if provided) or create it manually.
 # Example backend/.env:
 # DATABASE_URL=postgresql+psycopg2://user:password@localhost:5432/ai_app_db
-# APP_MODE=cloud # or "local"
+# APP_MODE=CLOUD # Set to CLOUD as only OpenAI is currently supported
 # KNOWLEDGE_BASE_PATH=../knowledgebase # Relative path from backend dir
 # 
-# # --- OpenAI Settings (if APP_MODE=cloud) ---
+# # --- OpenAI Settings --- #
 # OPENAI_API_KEY=your_openai_api_key
 # OPENAI_LLM_MODEL="gpt-4.1" # Or other compatible model
 # OPENAI_EMBEDDING_MODEL="text-embedding-3-small"
-# 
-# # --- Ollama Settings (if APP_MODE=local) ---
-# OLLAMA_BASE_URL=http://localhost:11434 # Default Ollama URL
-# OLLAMA_LLM_MODEL="llama3.1:8b"       # Ensure this model is pulled via `ollama pull`
-# OLLAMA_EMBEDDING_MODEL="nomic-text-embed" # Ensure this model is pulled
 #
-# Fill in your actual database credentials and API keys.
+# Fill in your actual database credentials and OpenAI API key.
 
 # Setup and Run Database (using Docker Compose)
 # Make sure Docker Desktop is running.
@@ -137,12 +129,12 @@ npm install
 
 ## Usage
 
-1.  **Mode Selection:** Go to the `Settings` page (gear icon) to choose between `Cloud (OpenAI)` and `Local (Ollama)` modes. The selected mode affects which LLM and embedding models are used by the backend.
+1.  **Mode Selection:** (Note: Currently, only 'CLOUD' mode using OpenAI is supported by the backend. The UI selector might still show 'Local', but it won't use Ollama.)
 2.  **Knowledge Base:** Go to the `Knowledge Base` page (folder icon) to upload files (.txt, .pdf, .docx). Uploaded files will be processed, chunked, vectorized, and stored for use in RAG.
-You can also download or delete existing files here.
-3.  **Chat:** Select an existing conversation from the sidebar or click "New Chat". Type messages in the input box. The chatbot will use the selected mode's LLM, conversation history, and relevant context from the knowledge base to respond.
-4.  **Document Creation:** Use the "Create Document" section at the bottom of the chat page. Enter a prompt describing the document you want to create. The Document Writer agent will generate the document in the background (using the selected mode's LLM and knowledge base) and save it as a .docx file in the `knowledgebase` folder.
-You should see a success message, and the file will appear in the Knowledge Base list after generation.
+    You can also download or delete existing files here.
+3.  **Chat:** Select an existing conversation from the sidebar or click "New Chat". Type messages in the input box. The chatbot will use OpenAI, conversation history, and relevant context from the knowledge base to respond.
+4.  **Document Creation:** Use the "Create Document" section at the bottom of the chat page. Enter a prompt describing the document you want to create. The Document Writer agent will generate the document in the background (using OpenAI and the knowledge base) and save it as a .docx file in the `knowledgebase` folder.
+    You should see a success message, and the file will appear in the Knowledge Base list after generation.
 
 ## Stopping the Application
 
